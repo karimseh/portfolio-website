@@ -38,7 +38,8 @@
   <div>
     <button
       type="submit"
-      class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-accent-500 text-white font-medium text-sm px-8 py-3 rounded-lg hover:bg-accent-600 transition-all duration-200 shadow-lg shadow-accent-500/20 cursor-pointer"
+      id="submit-btn"
+      class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-accent-500 text-white font-medium text-sm px-8 py-3 rounded-lg hover:bg-accent-600 transition-all duration-200 shadow-lg shadow-accent-500/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
     >
       Send Message
       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -53,21 +54,67 @@
 <script>
   import emailjs from '@emailjs/browser';
 
+  const SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
+  const VERIFY_URL = import.meta.env.PUBLIC_RECAPTCHA_VERIFY_URL;
+
+  // Load reCAPTCHA on page load so Google can observe user behavior
+  const recaptchaScript = document.createElement('script');
+  recaptchaScript.src = `https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`;
+  recaptchaScript.async = true;
+  document.head.appendChild(recaptchaScript);
+
+  function getRecaptchaToken(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      grecaptcha.ready(() => {
+        grecaptcha.execute(SITE_KEY, { action: 'contact_form' }).then(resolve).catch(reject);
+      });
+    });
+  }
+
+  async function verifyRecaptcha(token: string): Promise<boolean> {
+    const response = await fetch(VERIFY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token }),
+    });
+    if (!response.ok) return false;
+    const data = await response.json();
+    return data.success === true;
+  }
+
   const form = document.getElementById('contact-form') as HTMLFormElement;
   const status = document.getElementById('form-status');
+  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
 
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const formData = new FormData(form);
+    submitBtn.disabled = true;
 
     if (status) {
-      status.textContent = 'Sending...';
+      status.textContent = 'Verifying...';
       status.className = 'text-sm text-dark-400';
       status.classList.remove('hidden');
     }
 
     try {
+      const token = await getRecaptchaToken();
+      const isHuman = await verifyRecaptcha(token);
+
+      if (!isHuman) {
+        if (status) {
+          status.textContent = 'Verification failed. Please try again or email me directly.';
+          status.className = 'text-sm text-red-400';
+        }
+        submitBtn.disabled = false;
+        return;
+      }
+
+      if (status) {
+        status.textContent = 'Sending...';
+      }
+
       await emailjs.send(
         import.meta.env.PUBLIC_EMAILJS_SERVICE_ID,
         import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID,
@@ -89,6 +136,8 @@
         status.textContent = 'Something went wrong. Please try emailing me directly.';
         status.className = 'text-sm text-red-400';
       }
+    } finally {
+      submitBtn.disabled = false;
     }
   });
 </script>

@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # sanity studio generated files
 studio/.sanity/
+
+workers/
+env.d.ts
