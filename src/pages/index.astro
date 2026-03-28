@@ -18,7 +18,25 @@ const latestArticles: ArticleItem[] = (await client.fetch(queries.latestArticles
   .map((a: any) => ({ title: a.title, excerpt: a.excerpt, category: a.category, date: a.publishedAt, slug: a.slug?.current }));
 ---
 
-<BaseLayout title="Karim | Research-Driven Developer">
+<BaseLayout title="Portfolio website of Karim Sehimi" description="Karim Sehimi is a computer science PhD researcher and freelance developer. He builds web applications, blockchain solutions, and helps startups turn complex ideas into clean, production-ready software.">
+  <script is:inline type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "name": "Karim Sehimi",
+        "url": "https://karimdev.me",
+        "jobTitle": "PhD Researcher & Freelance Developer",
+        "description": "Computer science PhD researcher and freelance developer specializing in blockchain, Web3, and modern web applications.",
+        ...(settings?.github && { "sameAs": [settings.github, settings.linkedin, settings.googleScholar].filter(Boolean) })
+      },
+      {
+        "@type": "WebSite",
+        "name": "Karim Sehimi",
+        "url": "https://karimdev.me"
+      }
+    ]
+  })} />
   <!-- Compact Hero -->
   <section class="relative max-w-6xl mx-auto px-6 pt-20 pb-8">
     <div class="max-w-3xl">

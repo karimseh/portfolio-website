@@ -26,6 +26,19 @@ const description = article.seo?.metaDescription || article.excerpt;
 ---
 
 <BaseLayout title={`${title} | Blog`} description={description}>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": article.title,
+    ...(article.excerpt && { "description": article.excerpt }),
+    ...(article.publishedAt && { "datePublished": article.publishedAt }),
+    ...(article.coverImage && { "image": urlFor(article.coverImage).width(1200).url() }),
+    "author": {
+      "@type": "Person",
+      "name": "Karim Sehimi",
+      "url": "https://karimdev.me"
+    }
+  })} />
   <article class="max-w-3xl mx-auto px-6 py-20">
     <div class="mb-10">
       <a href="/blog" class="text-sm text-dark-400 hover:text-dark-200 transition-colors" data-reveal>
