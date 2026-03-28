@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Section from '../../components/Section.astro';
+import Card from '../../components/Card.astro';
+import Badge from '../../components/Badge.astro';
+import { PortableText } from 'astro-portabletext';
+import { client, queries, urlFor } from '../../lib/sanity';
+import { formatDate, estimateReadingTime } from '../../lib/utils';
+
+export async function getStaticPaths() {
+  const articles = await client.fetch(
+    `*[_type == "article" && defined(slug.current)]{ "slug": slug.current }`
+  );
+  return articles.map((a: any) => ({ params: { slug: a.slug } }));
+}
+
+const { slug } = Astro.params;
+const article = await client.fetch(queries.articleBySlug, { slug });
+
+if (!article) {
+  return Astro.redirect('/blog');
+}
+
+const title = article.seo?.metaTitle || article.title;
+const description = article.seo?.metaDescription || article.excerpt;
+---
+
+<BaseLayout title={`${title} | Blog`} description={description}>
+  <article class="max-w-3xl mx-auto px-6 py-20">
+    <div class="mb-10">
+      <a href="/blog" class="text-sm text-dark-400 hover:text-dark-200 transition-colors" data-reveal>
+        &larr; Back to blog
+      </a>
+    </div>
+
+    <header class="mb-12" data-reveal>
+      {article.category && (
+        <Badge class="mb-4">{article.category}</Badge>
+      )}
+      <h1 class="text-3xl md:text-5xl font-bold text-dark-50 mb-4 leading-tight">
+        {article.title}
+      </h1>
+      {article.excerpt && (
+        <p class="text-lg text-dark-400 mb-6">{article.excerpt}</p>
+      )}
+      <div class="flex items-center gap-4 text-sm text-dark-500">
+        {article.publishedAt && (
+          <time>{formatDate(article.publishedAt)}</time>
+        )}
+      </div>
+    </header>
+
+    {article.coverImage && (
+      <div class="mb-12 rounded-xl overflow-hidden" data-reveal>
+        <img
+          src={urlFor(article.coverImage).width(1200).url()}
+          alt={article.coverImage.alt || article.title}
+          class="w-full"
+          loading="eager"
+        />
+      </div>
+    )}
+
+    {article.body && (
+      <div class="prose max-w-none" data-reveal>
+        <PortableText value={article.body} />
+      </div>
+    )}
+  </article>
+
+  {article.related?.length > 0 && (
+    <div data-reveal>
+      <Section title="Related Articles">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {article.related.map((rel: any) => (
+            <Card
+              title={rel.title}
+              description={rel.excerpt}
+              date={rel.publishedAt}
+              tags={[rel.category]}
+              href={`/blog/${rel.slug?.current}`}
+            />
+          ))}
+        </div>
+      </Section>
+    </div>
+  )}
+</BaseLayout>

@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Section from '../../components/Section.astro';
+import Card from '../../components/Card.astro';
+import Badge from '../../components/Badge.astro';
+import { client, queries } from '../../lib/sanity';
+
+interface ArticleItem { title: string; excerpt: string; category: string; date: string; slug: string; }
+
+const articles: ArticleItem[] = (await client.fetch(queries.allArticles) || [])
+  .map((a: any) => ({ title: a.title, excerpt: a.excerpt, category: a.category, date: a.publishedAt, slug: a.slug?.current }));
+
+// Derive categories dynamically from articles
+const categories = ['All', ...new Set(articles.map(a => a.category).filter(Boolean))];
+---
+
+<BaseLayout title="Blog | Karim" description="Technical tutorials, research insights, and industry commentary on web development, blockchain, and healthcare tech.">
+  <Section>
+    <div class="mb-12">
+      <h1 data-reveal class="text-4xl md:text-5xl font-bold text-dark-50 mb-4">Blog</h1>
+      <p data-reveal data-reveal-delay="100" class="text-dark-400 max-w-2xl">
+        I write about web development, blockchain technology, healthcare data,
+        and the intersection of research and practice.
+      </p>
+    </div>
+
+    {articles.length > 0 ? (
+      <>
+        <!-- Category filter -->
+        <div data-reveal data-reveal-delay="200" class="flex flex-wrap gap-2 mb-10">
+          {categories.map((cat, i) => (
+            <button
+              class:list={[
+                'px-4 py-2 text-sm rounded-full transition-colors cursor-pointer',
+                i === 0
+                  ? 'bg-accent-500 text-white'
+                  : 'bg-dark-800 text-dark-400 hover:text-dark-200 hover:bg-dark-700',
+              ]}
+              data-category={cat.toLowerCase()}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" data-reveal-stagger data-reveal>
+          {articles.map((article) => (
+            <div data-reveal-child>
+              <Card
+                title={article.title}
+                description={article.excerpt}
+                date={article.date}
+                tags={[article.category]}
+                href={`/blog/${article.slug}`}
+              />
+            </div>
+          ))}
+        </div>
+      </>
+    ) : (
+      <div class="rounded-xl border border-dark-800 bg-dark-900/50 p-6" data-reveal>
+        <p class="text-sm text-dark-500 mb-2">Coming soon</p>
+        <p class="text-dark-400">Articles will be listed here as they are published.</p>
+      </div>
+    )}
+  </Section>
+</BaseLayout>

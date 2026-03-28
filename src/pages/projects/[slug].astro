@@ -1,0 +1,75 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Badge from '../../components/Badge.astro';
+import Button from '../../components/Button.astro';
+import { PortableText } from 'astro-portabletext';
+import { client, queries, urlFor } from '../../lib/sanity';
+import { formatDate } from '../../lib/utils';
+
+export async function getStaticPaths() {
+  const projects = await client.fetch(
+    `*[_type == "project" && defined(slug.current)]{ "slug": slug.current }`
+  );
+  return projects.map((p: any) => ({ params: { slug: p.slug } }));
+}
+
+const { slug } = Astro.params;
+const project = await client.fetch(queries.projectBySlug, { slug });
+
+if (!project) {
+  return Astro.redirect('/projects');
+}
+---
+
+<BaseLayout title={`${project.title} | Projects`} description={project.description}>
+  <article class="max-w-3xl mx-auto px-6 py-20">
+    <div class="mb-10">
+      <a href="/projects" class="text-sm text-dark-400 hover:text-dark-200 transition-colors" data-reveal>
+        &larr; Back to projects
+      </a>
+    </div>
+
+    <header class="mb-12" data-reveal>
+      <h1 class="text-3xl md:text-5xl font-bold text-dark-50 mb-4 leading-tight">
+        {project.title}
+      </h1>
+      {project.description && (
+        <p class="text-lg text-dark-400 mb-6">{project.description}</p>
+      )}
+      <div class="flex flex-wrap items-center gap-4 mb-6">
+        {project.techStack?.map((tech: string) => (
+          <Badge>{tech}</Badge>
+        ))}
+      </div>
+      <div class="flex items-center gap-4">
+        {project.liveUrl && (
+          <Button href={project.liveUrl} variant="primary" size="sm">
+            Live Demo &rarr;
+          </Button>
+        )}
+        {project.githubUrl && (
+          <Button href={project.githubUrl} variant="secondary" size="sm">
+            GitHub
+          </Button>
+        )}
+      </div>
+    </header>
+
+    {project.image && (
+      <div class="mb-12 rounded-xl overflow-hidden" data-reveal>
+        <img
+          src={urlFor(project.image).width(1200).url()}
+          alt={project.image.alt || project.title}
+          class="w-full"
+          loading="eager"
+        />
+      </div>
+    )}
+
+    {project.body && (
+      <div class="prose max-w-none" data-reveal>
+        <PortableText value={project.body} />
+      </div>
+    )}
+  </article>
+</BaseLayout>

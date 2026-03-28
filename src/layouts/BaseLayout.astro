@@ -1,0 +1,69 @@
+---
+import '../styles/global.css';
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/inter/700.css';
+import '@fontsource/jetbrains-mono/400.css';
+import NavBar from '../components/NavBar.astro';
+import Footer from '../components/Footer.astro';
+import Background from '../components/Background.astro';
+import ScrollReveal from '../components/ScrollReveal.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const {
+  title,
+  description = 'PhD researcher & freelance web developer specializing in blockchain, Web3, and modern web applications.',
+  ogImage = '/og-image.png',
+} = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+---
+
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(ogImage, Astro.site)} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, Astro.site)} />
+
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Theme script (prevent flash) -->
+    <script is:inline>
+      const theme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.className = theme;
+    </script>
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <Background />
+    <NavBar />
+    <main class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+    <ScrollReveal />
+  </body>
+</html>

@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Section from '../../components/Section.astro';
+import Card from '../../components/Card.astro';
+import { client, queries } from '../../lib/sanity';
+
+interface ProjectItem { title: string; description: string; tags: string[]; slug: string; }
+
+const projects: ProjectItem[] = (await client.fetch(queries.allProjects) || [])
+  .map((p: any) => ({ title: p.title, description: p.description, tags: p.techStack || [], slug: p.slug?.current }));
+---
+
+<BaseLayout title="Projects | Karim" description="A showcase of my recent projects — web applications, blockchain solutions, and more.">
+  <Section>
+    <div class="mb-12">
+      <h1 data-reveal class="text-4xl md:text-5xl font-bold text-dark-50 mb-4">Projects</h1>
+      <p data-reveal data-reveal-delay="100" class="text-dark-400 max-w-2xl">
+        A selection of projects I've built.
+      </p>
+    </div>
+
+    {projects.length > 0 ? (
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" data-reveal-stagger data-reveal>
+        {projects.map((project) => (
+          <div data-reveal-child>
+            <Card
+              title={project.title}
+              description={project.description}
+              tags={project.tags}
+              href={`/projects/${project.slug}`}
+            />
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div class="rounded-xl border border-dark-800 bg-dark-900/50 p-6" data-reveal>
+        <p class="text-sm text-dark-500 mb-2">Coming soon</p>
+        <p class="text-dark-400">Projects will be listed here as they are published.</p>
+      </div>
+    )}
+  </Section>
+</BaseLayout>

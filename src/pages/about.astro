@@ -1,0 +1,125 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import Badge from '../components/Badge.astro';
+import Button from '../components/Button.astro';
+import { PortableText } from 'astro-portabletext';
+import { client, queries } from '../lib/sanity';
+
+const settings = await client.fetch(queries.siteSettings);
+const publications = await client.fetch(queries.allPublications) || [];
+
+const fallbackSkills = [
+  { category: 'Frontend', items: ['React', 'Next.js', 'Astro', 'Vue.js', 'Tailwind CSS', 'TypeScript'] },
+  { category: 'Backend', items: ['Node.js', 'Python', 'PostgreSQL', 'MongoDB', 'REST APIs', 'GraphQL'] },
+  { category: 'Blockchain', items: ['Solidity', 'Hardhat', 'Ethers.js', 'IPFS', 'ZK-SNARKs', 'Smart Contracts'] },
+  { category: 'Research', items: ['FHIR', 'HL7', 'EHR Systems', 'Data Privacy', 'Interoperability', 'Scalability'] },
+];
+
+const skills = settings?.skills?.length ? settings.skills : fallbackSkills;
+---
+
+<BaseLayout title="About | Karim" description="PhD researcher and freelance web developer specializing in blockchain, healthcare data, and modern web applications.">
+  <Section>
+    <div class="max-w-3xl">
+      <h1 data-reveal class="text-4xl md:text-5xl font-bold text-dark-50 mb-6">About Me</h1>
+
+      <div class="space-y-6 text-dark-300 leading-relaxed prose prose-invert max-w-none" data-reveal data-reveal-delay="100">
+        {settings?.aboutBio ? (
+          <PortableText value={settings.aboutBio} />
+        ) : (
+          <>
+            <p>
+              I'm Karim, a PhD student in Computer Science with a focus on
+              <strong class="text-dark-100">electronic health record management using blockchain technology</strong>.
+              My research explores how decentralized systems can solve critical challenges
+              in healthcare data — including scalability, interoperability, and privacy.
+            </p>
+            <p>
+              Alongside my academic work, I'm a freelance web developer helping
+              startups and businesses build modern, performant web applications.
+              I bring the rigor of research to every project — analyzing problems deeply,
+              designing thoughtful architectures, and delivering clean, maintainable code.
+            </p>
+            <p>
+              I believe in the power of combining academic depth with practical execution.
+              While many developers build — I <em>engineer</em> solutions backed by research
+              and best practices.
+            </p>
+          </>
+        )}
+      </div>
+    </div>
+  </Section>
+
+  <div class="glow-divider max-w-4xl mx-auto"></div>
+
+  <!-- Skills -->
+  <div data-reveal>
+    <Section title="Skills & Technologies">
+      <div class="grid md:grid-cols-2 gap-8" data-reveal-stagger data-reveal>
+        {skills.map((group: any) => (
+          <div data-reveal-child class="rounded-xl border border-dark-800 bg-dark-900/50 p-6 transition-all duration-300 hover:border-dark-600 hover:bg-dark-800/50">
+            <h3 class="text-lg font-semibold text-dark-50 mb-4">{group.category}</h3>
+            <div class="flex flex-wrap gap-2">
+              {group.items.map((skill: string) => (
+                <Badge>{skill}</Badge>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </Section>
+  </div>
+
+  <div class="glow-divider max-w-4xl mx-auto"></div>
+
+  <!-- Publications -->
+  <div data-reveal>
+    <Section title="Publications" subtitle="Peer-reviewed research and academic contributions">
+      <div class="space-y-6 max-w-3xl">
+        {publications.length > 0 ? (
+          publications.map((pub: any) => (
+            <div class="rounded-xl border border-dark-800 bg-dark-900/50 p-6">
+              <h3 class="text-dark-50 font-semibold mb-1">
+                {pub.doi ? <a href={pub.doi} target="_blank" rel="noopener noreferrer" class="hover:text-accent-400 transition-colors">{pub.title}</a> : pub.title}
+              </h3>
+              {pub.authors?.length > 0 && (
+                <p class="text-sm text-dark-400 mb-1">{pub.authors.join(', ')}</p>
+              )}
+              <p class="text-sm text-dark-500">
+                {[pub.journal, pub.year].filter(Boolean).join(' — ')}
+              </p>
+              {pub.tags?.length > 0 && (
+                <div class="flex flex-wrap gap-2 mt-3">
+                  {pub.tags.map((tag: string) => <Badge>{tag}</Badge>)}
+                </div>
+              )}
+            </div>
+          ))
+        ) : (
+          <div class="rounded-xl border border-dark-800 bg-dark-900/50 p-6">
+            <p class="text-sm text-dark-500 mb-2">Coming soon</p>
+            <p class="text-dark-400">
+              Publications will be listed here as they are published.
+              My research focuses on blockchain-based EHR management systems,
+              zero-knowledge proofs for health data privacy, and FHIR interoperability.
+            </p>
+          </div>
+        )}
+      </div>
+    </Section>
+  </div>
+
+  <!-- CTA -->
+  <section class="max-w-6xl mx-auto px-6 py-20" data-reveal>
+    <div class="flex flex-col sm:flex-row gap-4 items-start">
+      <Button href="/projects" variant="secondary">
+        See my work &rarr;
+      </Button>
+      <Button href="/contact" variant="primary" class="btn-glow">
+        Work with me
+      </Button>
+    </div>
+  </section>
+</BaseLayout>

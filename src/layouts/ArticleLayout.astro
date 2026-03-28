@@ -1,0 +1,49 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Badge from '../components/Badge.astro';
+import { formatDate } from '../lib/utils';
+
+interface Props {
+  title: string;
+  description?: string;
+  publishedAt: string;
+  category?: string;
+  tags?: string[];
+  readingTime?: number;
+  ogImage?: string;
+}
+
+const { title, description, publishedAt, category, tags = [], readingTime, ogImage } = Astro.props;
+---
+
+<BaseLayout title={`${title} | Karim`} description={description} ogImage={ogImage}>
+  <article class="max-w-3xl mx-auto px-6 py-16">
+    <header class="mb-12">
+      <div class="flex items-center gap-3 mb-4 text-sm text-dark-400">
+        {category && <Badge>{category}</Badge>}
+        <time datetime={publishedAt}>{formatDate(publishedAt)}</time>
+        {readingTime && <span>{readingTime} min read</span>}
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold text-dark-50 leading-tight mb-4">
+        {title}
+      </h1>
+      {description && (
+        <p class="text-lg text-dark-400">{description}</p>
+      )}
+    </header>
+
+    <div class="prose max-w-none">
+      <slot />
+    </div>
+
+    {tags.length > 0 && (
+      <footer class="mt-12 pt-8 border-t border-dark-700">
+        <div class="flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <Badge variant="outline">{tag}</Badge>
+          ))}
+        </div>
+      </footer>
+    )}
+  </article>
+</BaseLayout>

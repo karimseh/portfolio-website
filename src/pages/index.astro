@@ -1,0 +1,141 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import Card from '../components/Card.astro';
+import Button from '../components/Button.astro';
+import Testimonials from '../components/Testimonials.astro';
+import { client, queries } from '../lib/sanity';
+
+interface ProjectItem { title: string; description: string; tags: string[]; slug: string; }
+interface ArticleItem { title: string; excerpt: string; category: string; date: string; slug: string; }
+
+// Fetch from Sanity
+const settings = await client.fetch(queries.siteSettings);
+const testimonials = await client.fetch(queries.allTestimonials) || [];
+const featuredProjects: ProjectItem[] = (await client.fetch(queries.featuredProjects) || [])
+  .map((p: any) => ({ title: p.title, description: p.description, tags: p.techStack || [], slug: p.slug?.current }));
+const latestArticles: ArticleItem[] = (await client.fetch(queries.latestArticles) || [])
+  .map((a: any) => ({ title: a.title, excerpt: a.excerpt, category: a.category, date: a.publishedAt, slug: a.slug?.current }));
+---
+
+<BaseLayout title="Karim | Research-Driven Developer">
+  <!-- Compact Hero -->
+  <section class="relative max-w-6xl mx-auto px-6 pt-20 pb-8">
+    <div class="max-w-3xl">
+      <div data-reveal data-reveal-delay="0" class="flex items-center gap-3 mb-5">
+        <span class="w-2 h-2 rounded-full bg-upwork-500 animate-pulse"></span>
+        <span class="text-sm text-dark-400">{settings?.heroBadge || 'Available for freelance work'}</span>
+      </div>
+
+      <h1 data-reveal data-reveal-delay="100" class="text-4xl md:text-6xl font-bold text-dark-50 leading-tight mb-5">
+        {settings?.heroHeadline || 'PhD-level thinking.'}<br />
+        <span class="gradient-text">{settings?.heroHeadlineHighlight || 'Startup-speed delivery.'}</span>
+      </h1>
+
+      <p data-reveal data-reveal-delay="200" class="text-lg text-dark-400 mb-7 max-w-2xl leading-relaxed">
+        {settings?.heroSubtitle || "I'm Karim — a computer science PhD researcher and freelance developer. I build web applications, blockchain solutions, and help startups turn complex ideas into clean, production-ready software."}
+      </p>
+
+      <div data-reveal data-reveal-delay="300" class="flex flex-wrap gap-4">
+        <Button href="/contact" variant="primary" size="lg" class="btn-glow">
+          {settings?.heroCtaPrimary || 'Hire Me'}
+        </Button>
+        <Button href="/projects" variant="secondary" size="lg">
+          {settings?.heroCtaSecondary || 'View Projects'}
+        </Button>
+      </div>
+    </div>
+  </section>
+
+  {testimonials.length > 0 && (
+    <>
+      <Testimonials testimonials={testimonials} stats={settings} />
+      <div class="glow-divider max-w-4xl mx-auto"></div>
+    </>
+  )}
+
+  <div data-reveal>
+    <Section title="Featured Projects" subtitle="Recent work I'm proud of">
+      {featuredProjects.length > 0 ? (
+        <>
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" data-reveal-stagger data-reveal>
+            {featuredProjects.map((project) => (
+              <div data-reveal-child>
+                <Card
+                  title={project.title}
+                  description={project.description}
+                  tags={project.tags}
+                  href={`/projects/${project.slug}`}
+                />
+              </div>
+            ))}
+          </div>
+          <div class="mt-8 text-center" data-reveal>
+            <Button href="/projects" variant="ghost">
+              View all projects &rarr;
+            </Button>
+          </div>
+        </>
+      ) : (
+        <div class="rounded-xl border border-dark-800 bg-dark-900/50 p-6" data-reveal>
+          <p class="text-sm text-dark-500 mb-2">Coming soon</p>
+          <p class="text-dark-400">Projects will be listed here as they are published.</p>
+        </div>
+      )}
+    </Section>
+  </div>
+  <div class="glow-divider max-w-4xl mx-auto"></div>
+
+  <div data-reveal>
+    <Section title="Latest Articles" subtitle="Tutorials, research insights, and industry commentary">
+      {latestArticles.length > 0 ? (
+        <>
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" data-reveal-stagger data-reveal>
+            {latestArticles.map((article) => (
+              <div data-reveal-child>
+                <Card
+                  title={article.title}
+                  description={article.excerpt}
+                  date={article.date}
+                  href={`/blog/${article.slug}`}
+                  tags={[article.category]}
+                />
+              </div>
+            ))}
+          </div>
+          <div class="mt-8 text-center" data-reveal>
+            <Button href="/blog" variant="ghost">
+              Read all articles &rarr;
+            </Button>
+          </div>
+        </>
+      ) : (
+        <div class="rounded-xl border border-dark-800 bg-dark-900/50 p-6" data-reveal>
+          <p class="text-sm text-dark-500 mb-2">Coming soon</p>
+          <p class="text-dark-400">Articles will be listed here as they are published.</p>
+        </div>
+      )}
+    </Section>
+  </div>
+
+  <!-- CTA -->
+  <section class="max-w-6xl mx-auto px-6 py-20" data-reveal="scale">
+    <div class="relative overflow-hidden rounded-2xl border border-dark-800 bg-dark-900/50 p-12 text-center">
+      <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute -top-24 -right-24 w-64 h-64 bg-accent-500/10 rounded-full blur-[80px]"></div>
+        <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-cyan-500/10 rounded-full blur-[80px]"></div>
+      </div>
+      <div class="relative">
+        <h2 class="text-3xl font-bold text-dark-50 mb-4">
+          {settings?.ctaHeading || "Let's build something great together"}
+        </h2>
+        <p class="text-dark-400 mb-8 max-w-lg mx-auto">
+          {settings?.ctaText || "Have a project in mind? I'd love to hear about it. Whether it's a web app, blockchain solution, or technical consultation — let's talk."}
+        </p>
+        <Button href="/contact" variant="primary" size="lg" class="btn-glow">
+          {settings?.ctaButtonLabel || 'Get in Touch'}
+        </Button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

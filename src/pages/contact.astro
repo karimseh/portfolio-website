@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { client, queries } from '../lib/sanity';
+
+const settings = await client.fetch(queries.siteSettings);
+---
+
+<BaseLayout title="Contact | Karim" description="Get in touch — let's discuss your project, collaboration opportunity, or just say hello.">
+  <Section>
+    <div class="grid md:grid-cols-2 gap-16">
+      <!-- Left column -->
+      <div>
+        <h1 data-reveal class="text-4xl md:text-5xl font-bold text-dark-50 mb-6">
+          Let's <span class="gradient-text">Talk</span>
+        </h1>
+        <p data-reveal data-reveal-delay="100" class="text-dark-400 mb-8 leading-relaxed">
+          Have a project in mind? Need technical consultation? Or just want to
+          discuss blockchain, web development, or research? I'd love to hear
+          from you.
+        </p>
+
+        <div class="space-y-6" data-reveal data-reveal-delay="200">
+          <div>
+            <h3 class="text-sm font-medium text-dark-300 mb-1">Email</h3>
+            <a href={`mailto:${settings?.email || 'contact@karimdev.me'}`} class="text-accent-400 hover:text-accent-300 transition-colors">
+              {settings?.email || 'contact@karimdev.me'}
+            </a>
+          </div>
+
+          <div>
+            <h3 class="text-sm font-medium text-dark-300 mb-1">Social</h3>
+            <div class="flex gap-4">
+              {settings?.github && <a href={settings.github} target="_blank" rel="noopener noreferrer" class="text-dark-400 hover:text-dark-200 transition-colors">GitHub</a>}
+              {settings?.linkedin && <a href={settings.linkedin} target="_blank" rel="noopener noreferrer" class="text-dark-400 hover:text-dark-200 transition-colors">LinkedIn</a>}
+              {settings?.googleScholar && <a href={settings.googleScholar} target="_blank" rel="noopener noreferrer" class="text-dark-400 hover:text-dark-200 transition-colors">Google Scholar</a>}
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-sm font-medium text-dark-300 mb-1">Based in</h3>
+            <p class="text-dark-400">{settings?.location || 'Available worldwide (remote)'}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column - Form -->
+      <div data-reveal="right" data-reveal-delay="200">
+        <ContactForm />
+      </div>
+    </div>
+  </Section>
+</BaseLayout>

@@ -1,0 +1,97 @@
+---
+import Badge from './Badge.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  href?: string;
+  tags?: string[];
+  date?: string;
+  image?: string;
+  class?: string;
+}
+
+const { title, description, href, tags = [], date, image, class: className } = Astro.props;
+
+import { formatDate } from '../lib/utils';
+---
+
+<a
+  href={href}
+  class:list={[
+    'card-hover group relative block rounded-xl p-6 transition-all duration-500',
+    'hover:-translate-y-1 hover:shadow-2xl hover:shadow-accent-500/5',
+    className,
+  ]}
+>
+  <!-- Animated gradient border -->
+  <div class="absolute inset-0 rounded-xl border border-dark-800 transition-colors duration-500 group-hover:border-transparent"></div>
+  <div class="absolute -inset-px rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 shimmer-border"></div>
+
+  <!-- Glass background -->
+  <div class="absolute inset-px rounded-[11px] bg-dark-900/80 backdrop-blur-sm transition-colors duration-500 group-hover:bg-dark-800/80"></div>
+
+  <!-- Content -->
+  <div class="relative">
+    {image && (
+      <div class="mb-4 overflow-hidden rounded-lg aspect-video bg-dark-800">
+        <img
+          src={image}
+          alt={title}
+          class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          loading="lazy"
+        />
+      </div>
+    )}
+
+    {date && (
+      <time class="text-xs text-dark-500 mb-2 block">{formatDate(date)}</time>
+    )}
+
+    <h3 class="text-lg font-semibold text-dark-50 mb-2 group-hover:text-accent-400 transition-colors duration-300">
+      {title}
+    </h3>
+
+    {description && (
+      <p class="text-sm text-dark-400 mb-4 line-clamp-2">{description}</p>
+    )}
+
+    {tags.length > 0 && (
+      <div class="flex flex-wrap gap-2">
+        {tags.map((tag) => (
+          <Badge size="sm">{tag}</Badge>
+        ))}
+      </div>
+    )}
+  </div>
+</a>
+
+<style>
+  .shimmer-border {
+    background: conic-gradient(
+      from var(--shimmer-angle, 0deg),
+      transparent 0%,
+      rgba(59,130,246,0.4) 10%,
+      transparent 20%,
+      transparent 80%,
+      rgba(6,182,212,0.4) 90%,
+      transparent 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    padding: 1px;
+    border-radius: 0.75rem;
+    animation: shimmer-spin 4s linear infinite;
+  }
+
+  @keyframes shimmer-spin {
+    to { --shimmer-angle: 360deg; }
+  }
+
+  @property --shimmer-angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+  }
+</style>
