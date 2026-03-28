@@ -51,6 +51,19 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 
     <meta name="generator" content={Astro.generator} />
 
+    <!-- Google Analytics 4 (production only) -->
+    {import.meta.env.PROD && (
+      <>
+        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${import.meta.env.PUBLIC_GA_MEASUREMENT_ID}`}></script>
+        <script is:inline define:vars={{ gaId: import.meta.env.PUBLIC_GA_MEASUREMENT_ID }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', gaId);
+        </script>
+      </>
+    )}
+
     <!-- Theme script (prevent flash) -->
     <script is:inline>
       const theme = localStorage.getItem('theme') || 'dark';
