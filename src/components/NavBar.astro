@@ -7,7 +7,7 @@ const navLinks = [
   { href: '/contact', label: 'Contact' },
 ];
 
-const currentPath = Astro.url.pathname;
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
 
 <header class="sticky top-0 z-50 border-b border-white/[0.04] bg-dark-950/60 backdrop-blur-xl backdrop-saturate-150">
