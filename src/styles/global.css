@@ -246,3 +246,22 @@
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
 }
+
+/* Typing cursor */
+.typing-cursor::after {
+  content: '|';
+  animation: blink 0.7s step-end infinite;
+  color: #3b82f6;
+  font-weight: 300;
+  margin-left: 2px;
+}
+
+.typing-cursor.typing-done::after {
+  animation: blink 0.7s step-end infinite 2s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}

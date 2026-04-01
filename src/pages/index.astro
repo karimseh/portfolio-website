@@ -40,15 +40,46 @@ const latestArticles: ArticleItem[] = (await client.fetch(queries.latestArticles
   <!-- Compact Hero -->
   <section class="relative max-w-6xl mx-auto px-6 pt-20 pb-8">
     <div class="max-w-3xl">
-      <div data-reveal data-reveal-delay="0" class="flex items-center gap-3 mb-5">
-        <span class="w-2 h-2 rounded-full bg-upwork-500 animate-pulse"></span>
-        <span class="text-sm text-dark-400">{settings?.heroBadge || 'Available for freelance work'}</span>
-      </div>
 
       <h1 data-reveal data-reveal-delay="100" class="text-4xl md:text-6xl font-bold text-dark-50 leading-tight mb-5">
-        {settings?.heroHeadline || 'PhD-level thinking.'}<br />
-        <span class="gradient-text">{settings?.heroHeadlineHighlight || 'Startup-speed delivery.'}</span>
+        <span id="hero-line1"></span><br />
+        <span id="hero-line2" class="gradient-text"></span><span id="hero-cursor" class="typing-cursor"></span>
       </h1>
+      <script is:inline define:vars={{
+        heroLine1: settings?.heroHeadline || 'PhD-level thinking.',
+        heroLine2: settings?.heroHeadlineHighlight || 'Startup-speed delivery.',
+      }}>
+        (function() {
+          const line1El = document.getElementById('hero-line1');
+          const line2El = document.getElementById('hero-line2');
+          const cursorEl = document.getElementById('hero-cursor');
+          const speed = 60;
+          let i = 0;
+
+          function typeLine1() {
+            if (i < heroLine1.length) {
+              line1El.textContent += heroLine1[i];
+              i++;
+              setTimeout(typeLine1, speed);
+            } else {
+              i = 0;
+              setTimeout(typeLine2, 300);
+            }
+          }
+
+          function typeLine2() {
+            if (i < heroLine2.length) {
+              line2El.textContent += heroLine2[i];
+              i++;
+              setTimeout(typeLine2, speed);
+            } else {
+              cursorEl.classList.add('typing-done');
+            }
+          }
+
+          typeLine1();
+        })();
+      </script>
 
       <p data-reveal data-reveal-delay="200" class="text-lg text-dark-400 mb-7 max-w-2xl leading-relaxed">
         {settings?.heroSubtitle || "I'm Karim — a computer science PhD researcher and freelance developer. I build web applications, blockchain solutions, and help startups turn complex ideas into clean, production-ready software."}
