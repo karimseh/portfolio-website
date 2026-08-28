@@ -1,0 +1,339 @@
+:root {
+  --paper: #f2f0e9;
+  --ink: #171612;
+  --muted: #77756e;
+  --green: #25863c;
+  --mono: "JetBrains Mono", monospace;
+  --serif: "EB Garamond", Georgia, "Times New Roman", serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--serif);
+  color: var(--ink);
+  background: var(--paper);
+  background-image: radial-gradient(circle,
+      rgba(23, 22, 18, 0.09) 1px,
+      transparent 1px);
+  background-size: 32px 32px;
+}
+
+.page {
+  position: relative;
+  isolation: isolate;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 56px 24px 28px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.page::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 120px;
+  left: 50%;
+  width: min(950px, 85vw);
+  aspect-ratio: 1;
+  border: 1px solid rgba(23, 22, 18, 0.04);
+  border-radius: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.hero {
+  width: min(100%, 900px);
+}
+
+.kicker {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .035em;
+  text-transform: uppercase;
+}
+
+.name {
+  margin: 90px 0 28px;
+  font-family: var(--serif);
+  font-size: clamp(64px, 8vw, 128px);
+  font-weight: 500;
+  line-height: 0.95;
+  letter-spacing: -0.055em;
+
+}
+
+.introduction {
+  margin: 0;
+  color: var(--muted);
+  font-size: clamp(16px, 1.5vw, 22px);
+  font-style: italic;
+  line-height: 1.55;
+}
+
+.short-rule {
+  width: 80px;
+  height: 1px;
+  margin: 44px auto 62px;
+  background: var(--muted);
+}
+
+.profile-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 26px;
+  font-family: var(--mono);
+  font-size: 14px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  flex-wrap: wrap;
+}
+
+.profile-links a {
+  color: var(--ink);
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.profile-links a:hover {
+  color: var(--muted);
+}
+
+.profile-links .upwork-link {
+  color: var(--green);
+}
+
+.construction {
+  width: min(100%, 700px);
+  margin-top: 110px;
+}
+
+.page-footer {
+  margin-top: auto;
+  padding-top: 70px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.construction-copy {
+  max-width: 590px;
+  margin: 52px auto 0;
+  color: #66635c;
+  font-size: clamp(17px, 1.5vw, 22px);
+  line-height: 1.7;
+}
+
+.construction-title {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  margin: 0;
+  font-family: var(--mono);
+  font-size: clamp(48px, 6vw, 88px);
+  font-weight: 400;
+  line-height: 0.94;
+  letter-spacing: -0.08em;
+  text-transform: uppercase;
+  /* transform: scaleX(0.82); */
+  transform-origin: center;
+  padding: 10px;
+}
+
+.construction-title::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: -1;
+  width: 35%;
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(23, 22, 18, 0.064),
+      transparent);
+
+  transform: translateX(-110%);
+  animation: grey-background-loop 5s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes grey-background-loop {
+  from {
+    transform: translateX(-110%);
+  }
+
+  to {
+    transform: translateX(660%);
+  }
+}
+
+.construction-word {
+  position: relative;
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  margin-inline: auto;
+
+  /* Stable letter outlines */
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px rgba(23, 22, 18, 0.65);
+}
+
+.construction-word::before {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+
+  /* Ensure the copy perfectly matches the original text */
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+
+  /* Remove the outline from the moving copy */
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 0;
+
+  /* One inclined bar per repeating tile */
+  background-image: linear-gradient(112deg,
+      transparent 0%,
+      transparent 38%,
+      var(--ink) 39%,
+      var(--ink) 57%,
+      transparent 58%,
+      transparent 100%);
+  background-size: 72px 100%;
+  background-repeat: repeat-x;
+
+  background-clip: text;
+  -webkit-background-clip: text;
+
+  animation: inclined-bars 2.2s linear infinite;
+  will-change: background-position;
+}
+
+@keyframes inclined-bars {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    /* Same as background-size, creating a seamless loop */
+    background-position: 72px 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .construction-word::before,
+  .construction-title::before {
+    animation: none;
+  }
+}
+
+.profile-links a:focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 6px;
+}
+
+@media (max-width: 700px) {
+  .page {
+    padding: 36px 18px 24px;
+  }
+
+  .page::before {
+    top: 90px;
+    width: 150vw;
+  }
+
+  .kicker {
+    max-width: 440px;
+    font-size: 9px;
+    line-height: 1.7;
+    letter-spacing: 0.12em;
+  }
+
+  .name {
+    margin: 62px 0 24px;
+    font-size: clamp(52px, 16vw, 76px);
+  }
+
+  .introduction {
+    max-width: 440px;
+    font-size: 18px;
+  }
+
+  .introduction br {
+    display: none;
+  }
+
+  .short-rule {
+    margin: 36px auto 42px;
+  }
+
+  .profile-links {
+    column-gap: 20px;
+    row-gap: 16px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+  }
+
+  .construction {
+    margin-top: 78px;
+  }
+
+  .construction-title {
+    padding-inline: 0;
+    font-size: clamp(34px, 10vw, 48px);
+    letter-spacing: -0.1em;
+  }
+
+  .construction-copy {
+    margin-top: 36px;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+
+  .page-footer {
+    padding-top: 54px;
+    font-size: 8px;
+    line-height: 1.8;
+    letter-spacing: 0.18em;
+  }
+}
+
+/* Very narrow phones */
+@media (max-width: 360px) {
+  .page {
+    padding-inline: 14px;
+  }
+
+  .construction-title {
+    font-size: 31px;
+  }
+
+  .profile-links {
+    column-gap: 14px;
+  }
+}

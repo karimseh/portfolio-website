@@ -1,34 +1,16 @@
-# Portfolio of Karim Sehimi
+# Karim Sehimi
 
 > https://karimdev.me
 
-## About
+Karim Sehimi is a PhD candidate in artificial intelligence and a full-stack developer.
 
-Karim Sehimi is a computer science PhD student and freelance web developer. His research focuses on electronic health record (EHR) management using blockchain technology, addressing challenges in scalability, interoperability, and privacy. Alongside his academic work, he builds modern, performant web applications for startups and businesses.
+The full portfolio is currently under construction. Research, writing, publications and selected client work will be added in a future release.
 
-## Skills
+## Available links
 
-- Frontend: React, Next.js, Astro, Vue.js, Tailwind CSS, TypeScript
-- Backend: Node.js, Python, PostgreSQL, MongoDB, REST APIs, GraphQL
-- Blockchain: Solidity, Hardhat, Ethers.js, IPFS, ZK-SNARKs, Smart Contracts
-- Research: FHIR, HL7, EHR Systems, Data Privacy, Interoperability, Scalability
-
-## Pages
-
-- Home: https://karimdev.me/
-- About: https://karimdev.me/about/
-- Projects: https://karimdev.me/projects/
-- Blog: https://karimdev.me/blog/
-- Contact: https://karimdev.me/contact/
-
-## Services
-
-- Web application development
-- Blockchain solutions and smart contracts
-- Technical consultation
-- Research collaboration
-
-## Contact
-
+- Website: https://karimdev.me
+- GitHub: https://github.com/karimseh
+- LinkedIn: https://www.linkedin.com/in/karim-sehimi-29ab881b8/
+- Google Scholar: https://scholar.google.com/citations?user=-0DLibwAAAAJ
+- Upwork: https://www.upwork.com/freelancers/~014d8d3df9f96bac7f
 - Email: contact@karimdev.me
-- Website: https://karimdev.me/contact/

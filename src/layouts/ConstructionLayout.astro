@@ -1,0 +1,53 @@
+---
+import "../styles/construction.css";
+import "@fontsource/jetbrains-mono/400.css";
+import "@fontsource/eb-garamond/400.css";
+import "@fontsource/eb-garamond/400-italic.css";
+import "@fontsource/eb-garamond/500.css";
+
+interface Props {
+    title: string;
+    description: string;
+    ogImage?: string;
+}
+
+const { title, description, ogImage = "/og-image.png" } = Astro.props;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const socialImageUrl = new URL(ogImage, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonicalUrl} />
+
+        <meta name="theme-color" content="#f2f0e9" />
+        <meta name="robots" content="index, follow" />
+
+        <link rel="sitemap" href="/sitemap-index.xml" />
+
+        <!-- Open Graph -->
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Karim Sehimi" />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={socialImageUrl} />
+
+        <!-- Twitter and other social platforms -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={socialImageUrl} />
+
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    </head>
+    <body>
+        <slot />
+    </body>
+</html>
